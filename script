@@ -4,3 +4,38 @@
 # 1) Copy script to a temp location, e.g. /tmp/InstallJenkins.sh
 # 2) Make executable, e.g. chmod a+x /tmp/InstallJenkins.sh
 # 3) Execute as su, e.g. sudo /tmp/InstallJenkins.sh
+echo "* Start install"
+
+# Install and configure pre-requisites
+sudo yum install -y wget
+sudo yum install -y java-1.8.0-openjdk.x86_64
+sudo cp /etc/profile /etc/profile_backup
+echo 'export JAVA_HOME=/usr/lib/jvm/jre-1.8.0-openjdk' | sudo tee -a /etc/profile
+echo 'export JRE_HOME=/usr/lib/jvm/jre' | sudo tee -a /etc/profile
+source /etc/profile
+
+# Install Jenkins
+
+sudo wget -O /etc/yum.repos.d/jenkins.repo https://pkg.jenkins.io/redhat-stable/jenkins.repo
+sudo rpm --import https://pkg.jenkins.io/redhat-stable/jenkins.io.key
+sudo yum install -y jenkins
+
+# Change Jenkins port
+
+sudo cp /etc/sysconfig/jenkins /etc/sysconfig/jenkins_org
+sudo sed -i -e 's/8080/8000/' /etc/sysconfig/jenkins
+
+# Adjust firewall
+
+sudo firewall-cmd --zone=public --permanent --add-port=8000/tcp
+sudo firewall-cmd --reload
+
+# Start and enable service
+sudo systemctl start jenkins.service
+sudo /sbin/chkconfig jenkins on
+
+clear
+
+echo "* Install complete"
+echo "* jenkins running on port 8000"
+echo "* launch http://<servername>:8000"

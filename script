@@ -4,9 +4,47 @@
 # 1) Copy script to a temp location, e.g. /tmp/InstallJenkins.sh
 # 2) Make executable, e.g. chmod a+x /tmp/InstallJenkins.sh
 # 3) Execute as su, e.g. sudo /tmp/InstallJenkins.sh
-echo "* Start install"
+
+platform=`uname -v`
 
 # Install and configure pre-requisites
+
+
+if [[ "$platform" = *'Ubuntu'* ]] || [[ "$platform" = *'Debian'* ]]; then
+##############################   Debian Install   ###################################
+#Install and configure pre-requisites
+clear
+echo "* Start Deb / Ubuntu install"
+sudo apt-get update
+sudo apt-get install -y wget
+sudo apt-get install -y apt-transport-https
+sudo apt-get install -y default-jre
+wget -q -O - https://pkg.jenkins.io/debian/jenkins-ci.org.key | sudo apt-key add -
+echo deb https://pkg.jenkins.io/debian-stable binary/ | sudo tee /etc/apt/sources.list.d/jenkins.list
+sudo apt-get update
+#install Jenkins
+sudo apt-get install -y jenkins
+#Change Port
+sudo cp /etc/default/jenkins /etc/default/jenkins_org
+sudo sed -i -e 's/8080/8000/' /etc/default/jenkins
+#Firewall exception
+sudo ufw allow 8000/tcp
+#Start Jenkins
+sudo service jenkins restart
+
+clear
+
+echo "* Install complete"
+echo "* jenkins running on port 8000"
+echo "* launch http://<servername>:8000"
+################################ END DEBIAN INSTALL ############################
+
+else
+
+##############################   Centos Install   ###################################
+# Install and configure pre-requisites
+clear
+echo "* Start Centos 7 install"
 sudo yum install -y wget
 sudo yum install -y java-1.8.0-openjdk.x86_64
 sudo cp /etc/profile /etc/profile_backup
@@ -39,3 +77,9 @@ clear
 echo "* Install complete"
 echo "* jenkins running on port 8000"
 echo "* launch http://<servername>:8000"
+
+#################### END CENTOS INSTALL ############################################
+
+fi
+
+

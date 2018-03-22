@@ -1,6 +1,6 @@
 ## JenkInstall
 
-**Bash script to install jenkins on centOS 7**
+**Bash script to install jenkins**
 
 **Assumptions**       
 Centos 7 / Ubuntu / Debian    

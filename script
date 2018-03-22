@@ -33,10 +33,13 @@ sudo ufw allow 8000/tcp
 sudo service jenkins restart
 
 clear
-
 echo "* Install complete"
 echo "* jenkins running on port 8000"
-echo "* launch http://<servername>:8000"
+ips=($(hostname -I))
+for ip in "${ips[@]}"
+do
+echo "* launch http://"$ip":8000"
+done
 ################################ END DEBIAN INSTALL ############################
 
 else
@@ -73,10 +76,13 @@ sudo systemctl start jenkins.service
 sudo /sbin/chkconfig jenkins on
 
 clear
-
 echo "* Install complete"
 echo "* jenkins running on port 8000"
-echo "* launch http://<servername>:8000"
+ips=($(hostname -I))
+for ip in "${ips[@]}"
+do
+echo "* launch http://"$ip":8000"
+done
 
 #################### END CENTOS INSTALL ############################################
 
